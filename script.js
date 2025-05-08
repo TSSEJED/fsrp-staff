@@ -1,44 +1,77 @@
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
+    const themeToggle = document.querySelector('.theme-toggle');
+    const viewButtons = document.querySelectorAll('.view-btn');
     const pdfEmbed = document.getElementById('pdf-embed');
     const pdfIframe = document.getElementById('pdf-iframe');
+    const closePdfBtn = document.getElementById('close-pdf');
     const currentDocumentTitle = document.getElementById('current-document-title');
-    const themeToggle = document.querySelector('.theme-toggle');
-    const closeButton = document.getElementById('close-pdf');
-    const viewButtons = document.querySelectorAll('.view-btn');
-    const quickAccessButtons = document.querySelectorAll('.quick-access-btn');
-    const fullTrainingBtn = document.getElementById('full-training-btn');
     const warningPolicyBtn = document.getElementById('warning-policy-btn');
+    const restrictedDocBtn = document.getElementById('restricted-doc-btn');
+    const trainerInfoBtn = document.getElementById('trainer-info-btn');
     const joinGameBtn = document.getElementById('join-game-btn');
+    const openInBrowserLink = document.getElementById('open-in-browser');
+    
+    // Access Popup Elements
+    const accessPopup = document.getElementById('access-popup');
+    const accessCodeInput = document.getElementById('access-code');
+    const submitCodeBtn = document.getElementById('submit-code');
+    const openDiscordBtn = document.getElementById('open-discord');
+    const closePopupBtn = document.getElementById('close-popup');
     
     // Theme Management
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
-        const toggleBall = document.querySelector('.toggle-ball');
-        
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
-            toggleBall.style.transform = 'translateX(30px)';
-        } else {
-            toggleBall.style.transform = 'translateX(0)';
         }
     }
     
     // Initialize theme
     initTheme();
     
-    // Theme toggle functionality
+    // Toggle theme
     themeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        
-        // Update the toggle ball position
-        const toggleBall = document.querySelector('.toggle-ball');
-        if (document.body.classList.contains('dark-mode')) {
-            toggleBall.style.transform = 'translateX(30px)';
-        } else {
-            toggleBall.style.transform = 'translateX(0)';
+    });
+    
+    // Add click listeners to view buttons
+    viewButtons.forEach(button => {
+        if (!button.classList.contains('restricted')) {
+            button.addEventListener('click', () => {
+                const pdfUrl = button.getAttribute('data-pdf');
+                const title = button.getAttribute('data-title');
+                if (pdfUrl && title) {
+                    openPdfViewer(pdfUrl, title);
+                }
+            });
         }
+    });
+    
+    // Close PDF viewer
+    closePdfBtn.addEventListener('click', () => {
+        pdfEmbed.classList.add('hidden');
+        pdfIframe.src = '';
+    });
+    
+    // Warning Policy button in quick access menu
+    warningPolicyBtn.addEventListener('click', () => {
+        const pdfUrl = warningPolicyBtn.getAttribute('data-pdf');
+        const title = warningPolicyBtn.getAttribute('data-title');
+        if (pdfUrl && title) {
+            openPdfViewer(pdfUrl, title);
+        }
+    });
+    
+    // Restricted document button
+    restrictedDocBtn.addEventListener('click', () => {
+        showAccessPopup('training');
+    });
+    
+    // Trainer info document button
+    trainerInfoBtn.addEventListener('click', () => {
+        showAccessPopup('trainer');
     });
     
     // Check if device is mobile
@@ -63,8 +96,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return baseUrl + relativePath;
     }
     
-    // PDF Viewing Functions
+    // Function to open PDF viewer
     function openPdfViewer(pdfUrl, title) {
+        // Special case for the trainer info document
+        if (pdfUrl === 'trainer-info') {
+            // Set the title in the viewer
+            currentDocumentTitle.textContent = title;
+            
+            // Show the PDF viewer
+            pdfEmbed.classList.remove('hidden');
+            
+            // Create Google Drive embedded URL
+            const googleDriveEmbedUrl = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/preview';
+            
+            // Set iframe source to the Google Drive embed
+            pdfIframe.src = googleDriveEmbedUrl;
+            
+            // Update the 'Open in Browser' link
+            if (openInBrowserLink) {
+                openInBrowserLink.href = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/view';
+            }
+            
+            console.log('Opening Google Drive document:', googleDriveEmbedUrl);
+            return;
+        }
+        
+        // For other PDF links
         // Get the absolute path to the PDF
         const absolutePdfUrl = getAbsolutePdfPath(pdfUrl);
         
@@ -84,42 +141,63 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set iframe source to the PDF
         pdfIframe.src = pdfUrl; // Use relative path for iframe to avoid cross-origin issues
         
+        // Update the 'Open in Browser' link
+        if (openInBrowserLink) {
+            openInBrowserLink.href = absolutePdfUrl;
+        }
+        
         console.log('Opening PDF:', absolutePdfUrl);
     }
-
-    // Add click listeners to view buttons
-    viewButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const pdfUrl = button.getAttribute('data-pdf');
-            const title = button.getAttribute('data-title');
+    
+    // Function to show access popup
+    function showAccessPopup(docType) {
+        // Store the document type in a data attribute for later use
+        accessPopup.setAttribute('data-doc-type', docType);
+        accessPopup.classList.remove('hidden');
+        accessCodeInput.focus();
+    }
+    
+    // Join Game button functionality
+    joinGameBtn.addEventListener('click', () => {
+        window.open('https://policeroleplay.community/join/AebBj', '_blank');
+    });
+    
+    // Access code popup functionality
+    submitCodeBtn.addEventListener('click', () => {
+        const code = accessCodeInput.value.trim();
+        const docType = accessPopup.getAttribute('data-doc-type');
+        
+        if (code === 'sejed') {
+            accessPopup.classList.add('hidden');
             
-            if (pdfUrl && title) {
-                openPdfViewer(pdfUrl, title);
+            if (docType === 'training') {
+                openPdfViewer('../Full staff training document.pdf', 'Full Staff Training Document');
+            } else if (docType === 'trainer') {
+                openPdfViewer('trainer-info', 'Trainer Information Document');
             }
-        });
-    });
-    
-    // Close PDF viewer
-    closeButton.addEventListener('click', () => {
-        pdfEmbed.classList.add('hidden');
-        pdfIframe.src = '';
-    });
-    
-    // Quick access buttons
-    fullTrainingBtn.addEventListener('click', () => {
-        const pdfUrl = fullTrainingBtn.getAttribute('data-pdf');
-        const title = fullTrainingBtn.getAttribute('data-title');
-        if (pdfUrl && title) {
-            openPdfViewer(pdfUrl, title);
+            
+            accessCodeInput.value = '';
+        } else {
+            alert('Invalid access code. Please try again or open a Discord ticket.');
         }
     });
     
-    warningPolicyBtn.addEventListener('click', () => {
-        const pdfUrl = warningPolicyBtn.getAttribute('data-pdf');
-        const title = warningPolicyBtn.getAttribute('data-title');
-        if (pdfUrl && title) {
-            openPdfViewer(pdfUrl, title);
+    // Enter key for access code
+    accessCodeInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            submitCodeBtn.click();
         }
+    });
+    
+    // Open Discord button
+    openDiscordBtn.addEventListener('click', () => {
+        window.open('https://discord.gg/sJMy3HxFAj', '_blank');
+    });
+    
+    // Close popup button
+    closePopupBtn.addEventListener('click', () => {
+        accessPopup.classList.add('hidden');
+        accessCodeInput.value = '';
     });
     
     // Add keyboard navigation
@@ -130,25 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             pdfEmbed.classList.add('hidden');
             pdfIframe.src = '';
         }
-    });
-
-    // Join Game button functionality
-    joinGameBtn.addEventListener('click', () => {
-        window.open('https://policeroleplay.community/join/AebBj', '_blank');
-    });
-
-    // Console Branding
-    console.log('%cFSRP Trainers Portal', 'color: #3a86ff; font-size: 20px; font-weight: bold;');
-    console.log('%cDesigned by Sejed TRABELLSSI | sejed.pages.dev', 'color: #8338ec; font-size: 12px;');
-    
-    // Disable right-click
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-    });
-    
-    // Disable keyboard shortcuts for saving, printing, etc.
-    document.addEventListener('keydown', function(e) {
+        
         // Prevent Ctrl+S, Ctrl+P, Ctrl+Shift+I
         if ((e.ctrlKey && e.key === 's') || 
             (e.ctrlKey && e.key === 'p') || 
@@ -157,4 +217,22 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
     });
+    
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // This is a client-side check only and should be supplemented with server-side validation in a production environment
+    const fullTrainingLinks = document.querySelectorAll('a[href*="Full staff training"]');
+    fullTrainingLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Access denied. You do not have permission to view this document.');
+        });
+    });
+    // Console Branding
+    console.log('%cFSRP Staff Portal', 'color: #f44336; font-size: 20px; font-weight: bold;');
+    console.log('%cDesigned by Sejed TRABELLSSI | sejed.pages.dev', 'color: #ff9800; font-size: 12px;');
 });

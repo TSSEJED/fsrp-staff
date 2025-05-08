@@ -1,12 +1,10 @@
-# FSRP Trainers Portal
+# FSRP Staff Portal
 
-A web-based portal for FSRP trainers to access training documents.
+A web-based portal for FSRP staff to access policy documents.
 
 ## Features
 
-- Access to both training documents:
-  - Full Staff Training Document
-  - Staff Warning Policy Document
+- Access to the Staff Warning Policy Document
 - Modern, responsive UI that works on desktop and mobile devices
 - PDF viewer with navigation controls and zoom functionality
 - Dark mode support
@@ -24,7 +22,7 @@ This portal uses the following technologies:
 ## Usage
 
 1. Open `index.html` in a web browser
-2. Click "View Document" to open a PDF in the built-in viewer
+2. Click "View Document" to open the PDF in the built-in viewer
 3. Use the controls to navigate through the document
 4. Click "Download" to download the PDF file
 
@@ -42,6 +40,10 @@ When viewing a PDF:
 On Android devices that don't support embedded PDFs, users will be presented with alternative options:
 - Open in Browser: Opens the PDF in a new browser tab
 - Download PDF: Downloads the PDF file for viewing in a PDF reader app
+
+## Security Notes
+
+This portal is designed to restrict access to only the Staff Warning Policy Document. The full training document is not accessible to staff users.
 
 ## Credits
 
