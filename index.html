@@ -76,15 +76,24 @@
                         <button id="warning-policy-btn" class="quick-access-btn" data-pdf="../STAFF WARNING POLICY DOCUMENT.pdf" data-title="Staff Warning Policy">
                             <i class="fas fa-exclamation-triangle"></i> Warning Policy
                         </button>
-                        <button id="full-training-btn" class="quick-access-btn restricted">
-                            <i class="fas fa-lock"></i> Training Doc
+                        <button id="restricted-doc-btn" class="quick-access-btn restricted">
+                            <i class="fas fa-lock"></i> Trainers Document
                         </button>
+                    </div>
+                    <div class="mobile-pdf-controls">
+                        <a id="open-in-browser" href="" target="_blank" class="mobile-pdf-btn">
+                            <i class="fas fa-external-link-alt"></i> Open in Browser
+                        </a>
                     </div>
                     <button id="close-pdf" class="close-btn"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <div class="pdf-container">
                 <iframe id="pdf-iframe" src="" frameborder="0"></iframe>
+                <div id="mobile-pdf-message" class="mobile-pdf-message hidden">
+                    <i class="fas fa-mobile-alt"></i>
+                    <p>For better viewing on mobile devices, please use the "Open in Browser" option above.</p>
+                </div>
             </div>
         </div>
     </div>

@@ -807,6 +807,57 @@ margin-top: auto;
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap;
+}
+
+.mobile-pdf-controls {
+    display: none;
+}
+
+.mobile-pdf-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--success-color);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.mobile-pdf-btn:hover {
+    background-color: #3d8b40;
+    transform: translateY(-2px);
+}
+
+.mobile-pdf-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.mobile-pdf-message i {
+    font-size: 2rem;
+    color: var(--success-color);
+}
+
+.mobile-pdf-message p {
+    margin: 0;
+    line-height: 1.5;
 }
 
 .quick-access-menu {
@@ -1030,6 +1081,17 @@ footer p {
     .access-popup {
         width: 95%;
         left: 2.5%;
+    }
+    
+    .mobile-pdf-controls {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .mobile-pdf-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 

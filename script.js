@@ -81,19 +81,32 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show the PDF viewer
         pdfEmbed.classList.remove('hidden');
         
+        // Get the open in browser link
+        const openInBrowserLink = document.getElementById('open-in-browser');
+        const mobilePdfMessage = document.getElementById('mobile-pdf-message');
+        
+        // Set the direct link for the "Open in Browser" button
+        openInBrowserLink.href = pdfUrl;
+        
         // Handle mobile devices differently
         if (isMobileDevice()) {
-            // For mobile devices, use Google PDF Viewer or direct link
-            const googlePdfViewer = 'https://docs.google.com/viewer?url=' + encodeURIComponent(window.location.href.split('/').slice(0, -1).join('/') + '/' + pdfUrl) + '&embedded=true';
+            // Show mobile controls
+            document.querySelector('.mobile-pdf-controls').style.display = 'block';
+            
+            // Try to use Google PDF Viewer first
+            const googlePdfViewer = 'https://docs.google.com/viewer?url=' + encodeURIComponent(window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/' + pdfUrl) + '&embedded=true';
             pdfIframe.src = googlePdfViewer;
             
-            // Add a fallback message if the iframe doesn't load properly
-            pdfIframe.onerror = function() {
-                pdfIframe.src = 'about:blank';
-                alert('PDF viewer not supported on your device. Please try opening in browser.');
-            };
+            // Show mobile message after a short delay
+            setTimeout(() => {
+                mobilePdfMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    mobilePdfMessage.classList.add('hidden');
+                }, 5000); // Hide after 5 seconds
+            }, 1000);
         } else {
-            // For desktop, use direct PDF embedding
+            // For desktop, use direct PDF embedding and hide mobile controls
+            document.querySelector('.mobile-pdf-controls').style.display = 'none';
             pdfIframe.src = pdfUrl;
         }
         
@@ -132,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Open Discord button
     openDiscordBtn.addEventListener('click', () => {
-        window.open('https://discord.gg/yaprqtp3V3', '_blank');
+        window.open('https://discord.gg/sJMy3HxFAj', '_blank');
     });
     
     // Close popup button
