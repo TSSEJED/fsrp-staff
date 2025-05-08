@@ -139,7 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
         pdfEmbed.classList.remove('hidden');
         
         // Set iframe source to the PDF
-        pdfIframe.src = pdfUrl; // Use relative path for iframe to avoid cross-origin issues
+        // Make sure we're using the correct path format
+        if (pdfUrl.startsWith('../')) {
+            pdfIframe.src = pdfUrl;
+        } else {
+            pdfIframe.src = absolutePdfUrl;
+        }
         
         // Update the 'Open in Browser' link
         if (openInBrowserLink) {
