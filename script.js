@@ -67,16 +67,35 @@ document.addEventListener('DOMContentLoaded', function() {
         showAccessPopup();
     });
     
+    // Check if device is mobile
+    function isMobileDevice() {
+        return (window.innerWidth <= 768) || 
+               (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    }
+    
     // Function to open PDF viewer
     function openPdfViewer(pdfUrl, title) {
-        // Set the iframe source to the PDF URL
-        pdfIframe.src = pdfUrl;
-        
         // Set the title in the viewer
         currentDocumentTitle.textContent = title;
         
         // Show the PDF viewer
         pdfEmbed.classList.remove('hidden');
+        
+        // Handle mobile devices differently
+        if (isMobileDevice()) {
+            // For mobile devices, use Google PDF Viewer or direct link
+            const googlePdfViewer = 'https://docs.google.com/viewer?url=' + encodeURIComponent(window.location.href.split('/').slice(0, -1).join('/') + '/' + pdfUrl) + '&embedded=true';
+            pdfIframe.src = googlePdfViewer;
+            
+            // Add a fallback message if the iframe doesn't load properly
+            pdfIframe.onerror = function() {
+                pdfIframe.src = 'about:blank';
+                alert('PDF viewer not supported on your device. Please try opening in browser.');
+            };
+        } else {
+            // For desktop, use direct PDF embedding
+            pdfIframe.src = pdfUrl;
+        }
         
         console.log('Opening PDF:', pdfUrl);
     }
