@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', function() {
             accessPopup.classList.add('hidden');
             
             if (docType === 'training') {
-                openPdfViewer('../Full staff training document.pdf', 'Full Staff Training Document');
+                openPdfViewer('Full staff training document.pdf', 'Full Staff Training Document');
             } else if (docType === 'trainer') {
-                openPdfViewer('../Trainer Guide for FSRP (2).pdf', 'Trainer Information Document');
+                openPdfViewer('Trainer Guide for FSRP (2).pdf', 'Trainer Information Document');
             }
             
             accessCodeInput.value = '';
