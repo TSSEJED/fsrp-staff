@@ -89,37 +89,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (relativePath.startsWith('../')) {
             // Remove the '../' and go up one directory in the baseUrl
             const parentBaseUrl = baseUrl.substring(0, baseUrl.slice(0, -1).lastIndexOf('/') + 1);
-            return parentBaseUrl + relativePath.substring(3);
+            
+            // Get the filename part and properly encode it
+            const pathWithoutPrefix = relativePath.substring(3);
+            const lastSlashIndex = pathWithoutPrefix.lastIndexOf('/');
+            
+            if (lastSlashIndex !== -1) {
+                // If there are subdirectories in the path
+                const directory = pathWithoutPrefix.substring(0, lastSlashIndex + 1);
+                const filename = pathWithoutPrefix.substring(lastSlashIndex + 1);
+                return parentBaseUrl + directory + encodeURIComponent(filename);
+            } else {
+                // If it's just a filename
+                return parentBaseUrl + encodeURIComponent(pathWithoutPrefix);
+            }
         }
         
-        // Otherwise, just join the base URL and the relative path
-        return baseUrl + relativePath;
+        // Otherwise, just join the base URL and the properly encoded relative path
+        return baseUrl + encodeURIComponent(relativePath);
     }
     
     // Function to open PDF viewer
     function openPdfViewer(pdfUrl, title) {
-        // Special case for the trainer info document
-        if (pdfUrl === 'trainer-info') {
-            // Set the title in the viewer
-            currentDocumentTitle.textContent = title;
-            
-            // Show the PDF viewer
-            pdfEmbed.classList.remove('hidden');
-            
-            // Create Google Drive embedded URL with zoom parameter
-            const googleDriveEmbedUrl = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/preview?zoom=50';
-            
-            // Set iframe source to the Google Drive embed
-            pdfIframe.src = googleDriveEmbedUrl;
-            
-            // Update the 'Open in Browser' link
-            if (openInBrowserLink) {
-                openInBrowserLink.href = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/view';
-            }
-            
-            console.log('Opening Google Drive document:', googleDriveEmbedUrl);
-            return;
-        }
         
         // For other PDF links
         // Get the absolute path to the PDF
@@ -184,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (docType === 'training') {
                 openPdfViewer('../Full staff training document.pdf', 'Full Staff Training Document');
             } else if (docType === 'trainer') {
-                openPdfViewer('trainer-info', 'Trainer Information Document');
+                openPdfViewer('../Trainer Guide for FSRP (2).pdf', 'Trainer Information Document');
             }
             
             accessCodeInput.value = '';
