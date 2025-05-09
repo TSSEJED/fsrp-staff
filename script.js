@@ -141,13 +141,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set iframe source to the PDF
         // Make sure we're using the correct path format with proper encoding
         try {
-            if (pdfUrl.startsWith('../')) {
-                // For local PDFs, use direct file path
-                pdfIframe.src = pdfUrl;
-            } else {
-                // For other URLs, ensure they're properly encoded
-                pdfIframe.src = absolutePdfUrl;
-            }
+            // Always use the absolute URL for PDFs when in the iframe
+            // This ensures it works both locally and when hosted online
+            pdfIframe.src = absolutePdfUrl;
+            
+            // For debugging
+            console.log('Setting PDF iframe source to:', absolutePdfUrl);
         } catch (error) {
             console.error('Error setting PDF iframe source:', error);
             alert('There was an error loading the PDF. Please try again.');
