@@ -106,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show the PDF viewer
             pdfEmbed.classList.remove('hidden');
             
-            // Create Google Drive embedded URL
-            const googleDriveEmbedUrl = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/preview';
+            // Create Google Drive embedded URL with zoom parameter
+            const googleDriveEmbedUrl = 'https://drive.google.com/file/d/11yT0dMFEWJo073JkWg7XsVFCq7FKw0iq/preview?zoom=50';
             
             // Set iframe source to the Google Drive embed
             pdfIframe.src = googleDriveEmbedUrl;
@@ -139,11 +139,18 @@ document.addEventListener('DOMContentLoaded', function() {
         pdfEmbed.classList.remove('hidden');
         
         // Set iframe source to the PDF
-        // Make sure we're using the correct path format
-        if (pdfUrl.startsWith('../')) {
-            pdfIframe.src = pdfUrl;
-        } else {
-            pdfIframe.src = absolutePdfUrl;
+        // Make sure we're using the correct path format with proper encoding
+        try {
+            if (pdfUrl.startsWith('../')) {
+                // For local PDFs, use direct file path
+                pdfIframe.src = pdfUrl;
+            } else {
+                // For other URLs, ensure they're properly encoded
+                pdfIframe.src = absolutePdfUrl;
+            }
+        } catch (error) {
+            console.error('Error setting PDF iframe source:', error);
+            alert('There was an error loading the PDF. Please try again.');
         }
         
         // Update the 'Open in Browser' link
